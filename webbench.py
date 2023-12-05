@@ -4,10 +4,9 @@ import httpx
 import argparse
 
 
-def parser():
+def parse_args():
     parser = argparse.ArgumentParser(description="一个复杂的命令行参数解析示例")
 
-    # 添加命令行参数
     parser.add_argument('-f', '--force', action='store_true', help='不需要等待服务器响应')
     parser.add_argument('-r', '--reload', action='store_true', help='发送重新加载请求')
     parser.add_argument('-t', '--time', type=int, help='运行多长时间，单位：秒')
@@ -19,15 +18,15 @@ def parser():
     parser.add_argument('--trace', action='store_true', help='使用 TRACE请求方法')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 1.0', help='显示版本号')
 
-    # 解析参数
-    args = parser.parse_args()
+    return parser.parse_args()
 
 
+args = parse_args()
 
 # 配置
 TARGET_URL = 'https://www.google.com/'
-THREAD_COUNT = 10  # 同时并发的线程数
-REQUEST_PER_THREAD = 100  # 每个线程发送的请求数
+THREAD_COUNT = args.clients
+REQUEST_PER_THREAD = 100 if args.time is None else args.time // THREAD_COUNT
 
 success_count = 0
 failure_count = 0
@@ -37,10 +36,20 @@ lock = threading.Lock()
 def worker():
     global success_count, failure_count
 
-    with httpx.Client(http2=True) as client: # get
+    proxies = {'all://': args.proxy} if args.proxy else None
+    method = 'GET'  # Default method
+    if args.head:
+        method = 'HEAD'
+    elif args.options:
+        method = 'OPTIONS'
+    elif args.trace:
+        method = 'TRACE'
+
+    with httpx.Client(http2=True, proxies=proxies) as client:
         for _ in range(REQUEST_PER_THREAD):
             try:
-                response = client.get(TARGET_URL)
+                request_func = getattr(client, method.lower())
+                response = request_func(TARGET_URL)
                 if 200 <= response.status_code < 400:
                     with lock:
                         success_count += 1
