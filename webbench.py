@@ -7,15 +7,11 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="一个复杂的命令行参数解析示例")
 
-    parser.add_argument('-f', '--force', action='store_true', help='不需要等待服务器响应')
-    parser.add_argument('-r', '--reload', action='store_true', help='发送重新加载请求')
     parser.add_argument('-t', '--time', type=int, help='运行多长时间，单位：秒')
-    parser.add_argument('-p', '--proxy', type=str, help='使用代理服务器来发送请求，格式：server:port')
     parser.add_argument('-c', '--clients', type=int, default=1, help='创建多少个客户端，默认1个')
     parser.add_argument('--get', action='store_true', help='使用 GET请求方法')
     parser.add_argument('--head', action='store_true', help='使用 HEAD请求方法')
     parser.add_argument('--options', action='store_true', help='使用 OPTIONS请求方法')
-    parser.add_argument('--trace', action='store_true', help='使用 TRACE请求方法')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 1.0', help='显示版本号')
 
     return parser.parse_args()
@@ -36,14 +32,12 @@ lock = threading.Lock()
 def worker():
     global success_count, failure_count
 
-    proxies = {'all://': args.proxy} if args.proxy else None
+    proxies = None
     method = 'GET'  # Default method
     if args.head:
         method = 'HEAD'
     elif args.options:
         method = 'OPTIONS'
-    elif args.trace:
-        method = 'TRACE'
 
     with httpx.Client(http2=True, proxies=proxies) as client:
         for _ in range(REQUEST_PER_THREAD):
