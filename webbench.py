@@ -9,6 +9,7 @@ def parse_args():
 
     parser.add_argument('-t', '--time', type=int, help='运行多长时间，单位：秒')
     parser.add_argument('-c', '--clients', type=int, default=1, help='创建多少个客户端，默认1个')
+    parser.add_argument('-p', "--protocol", choices=['http1', 'http2'], default='http1', help="HTTP protocol version")
     parser.add_argument('--get', action='store_true', help='使用 GET请求方法')
     parser.add_argument('--head', action='store_true', help='使用 HEAD请求方法')
     parser.add_argument('--options', action='store_true', help='使用 OPTIONS请求方法')
@@ -20,9 +21,10 @@ def parse_args():
 args = parse_args()
 
 # 配置
-TARGET_URL = 'https://www.google.com/'
+TARGET_URL = 'https://httpbin.org/'
 THREAD_COUNT = args.clients
 REQUEST_PER_THREAD = 100 if args.time is None else args.time // THREAD_COUNT
+HTTP_VERSION = args.protocol == 'http2'  # http2 -> True, http1 -> false
 
 success_count = 0
 failure_count = 0
@@ -39,7 +41,8 @@ def worker():
     elif args.options:
         method = 'OPTIONS'
 
-    with httpx.Client(http2=True, proxies=proxies) as client:
+    # args.protocol == "http1" -> http2 = false
+    with httpx.Client(http2=HTTP_VERSION, proxies=proxies) as client:
         for _ in range(REQUEST_PER_THREAD):
             try:
                 request_func = getattr(client, method.lower())
