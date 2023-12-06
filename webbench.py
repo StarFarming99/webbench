@@ -58,7 +58,6 @@ def worker():
                 with lock:
                     failure_count += 1
 
-
 def main():
     start_time = time.time()
 
