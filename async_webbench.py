@@ -53,7 +53,7 @@ async def main():
     start_time = time.time()
 
     tasks = [worker(TARGET_URL, HTTP_VERSION, method, REQUEST_PER_CLIENT) for _ in range(CLIENT_COUNT)]
-    results = await asyncio.gather(*tasks)py
+    results = await asyncio.gather(*tasks)
 
     total_success = sum(success for success, failure in results)
     total_failure = sum(failure for success, failure in results)
