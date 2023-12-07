@@ -43,7 +43,7 @@ async def main():
     # 配置
     TARGET_URL = 'https://httpbin.org/'
     CLIENT_COUNT = args.clients
-    REQUEST_PER_CLIENT = 100 if args.time is None else args.time // CLIENT_COUNT
+    REQUEST_PER_CLIENT = 100 if args.request is None else args.request // CLIENT_COUNT
     HTTP_VERSION = args.protocol == 'http2'  # http2 -> True, http1 -> false
 
     method = 'GET'

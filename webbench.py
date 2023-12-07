@@ -23,7 +23,7 @@ args = parse_args()
 # 配置
 TARGET_URL = 'https://httpbin.org/'
 THREAD_COUNT = args.clients
-REQUEST_PER_THREAD = 100 if args.time is None else args.time // THREAD_COUNT
+REQUEST_PER_THREAD = 100 if args.request is None else args.request // THREAD_COUNT
 HTTP_VERSION = args.protocol == 'http2'  # http2 -> True, http1 -> false
 
 success_count = 0
