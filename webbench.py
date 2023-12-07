@@ -5,15 +5,15 @@ import argparse
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="一个复杂的命令行参数解析示例")
+    parser = argparse.ArgumentParser(description="a parser")
 
-    parser.add_argument('-t', '--time', type=int, help='运行多长时间，单位：秒')
-    parser.add_argument('-c', '--clients', type=int, default=1, help='创建多少个客户端，默认1个')
+    parser.add_argument('-r', '--request', type=int, help='request_per_thread')
+    parser.add_argument('-c', '--clients', type=int, default=1, help='How many clients to create')
     parser.add_argument('-p', "--protocol", choices=['http1', 'http2'], default='http1', help="HTTP protocol version")
-    parser.add_argument('--get', action='store_true', help='使用 GET请求方法')
-    parser.add_argument('--head', action='store_true', help='使用 HEAD请求方法')
-    parser.add_argument('--options', action='store_true', help='使用 OPTIONS请求方法')
-    parser.add_argument('-V', '--version', action='version', version='%(prog)s 1.0', help='显示版本号')
+    parser.add_argument('--get', action='store_true', help='GET method')
+    parser.add_argument('--head', action='store_true', help='HEAD method')
+    parser.add_argument('--options', action='store_true', help='OPTIONS method')
+    parser.add_argument('-V', '--version', action='version', version='%(prog)s 1.0', help='Show versions')
 
     return parser.parse_args()
 
