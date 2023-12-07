@@ -7,7 +7,7 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="a parser")
 
-    parser.add_argument('-r', '--request', type=int, help='request_per_thread')
+    parser.add_argument('-r', '--request', type=int, help='total requests')
     parser.add_argument('-c', '--clients', type=int, default=1, help='How many clients to create')
     parser.add_argument('-p', "--protocol", choices=['http1', 'http2'], default='http1', help="HTTP protocol version")
     parser.add_argument('--get', action='store_true', help='GET method')
